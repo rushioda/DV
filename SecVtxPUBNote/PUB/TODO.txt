@@ -1,0 +1,53 @@
+
+- Harmonize feynman diagrams and add into the note
+- Improve description of the models in the PUB note, and add references
+
+- Decide on which plots we want to show, and what models to include on each of the plots
+  --> Grouped plots with all models for breakdown of various terms? 
+       ---- Stick with current definition of total efficiency
+       ---- Need to introduce some truth acceptance into definition. Don't show this.
+       ---- Single plots for all three models. Need to still choose which points within each model
+  --> In definition of efficiency and split rate, drop the 10mm cut
+       ---- Introduce a cut instead on match score? For efficiency >0.5? Study?
+  --> Efficiency as a function of number of tracks?
+       ---- Separate into algo and total
+       ---- Only needed for gg and h->aa
+  --> Efficiency as a function of mu
+       ---- All models to be included
+       ---- Show for algo and total
+       ---- Reference LRT note to explain primary mu dep.
+  --> Efficiency as a function of opening angle between leptons [HNL only]
+       ---- Still needs a bit of study
+       ---- Add in hadronic models, using the max dR between any two truth tracks
+       ---- Separate into A, algo and total. Decide on which to show once we understand the primary effect of inefficiency
+  --> Effect of track attachmen
+       ---- Clarify what selection eff is (probably there, I just didn't read it yet)
+       ---- Only for gg and haa signatures
+       ---- Plot already exists, but decide on which models to show. We think we understand the N1 dep, but confirm?
+  --> Mass resolution plots
+       ---- Understand peak at 0.05?
+       ---- Double check definition of what goes into this plot; clarify into the text
+  --> Reproduce truth purity plots with inclusive truth definition
+  --> Split rate
+       ---- Use inclusive truth vertex definition
+       ---- [not directly discussed, but we should include a plot contrasting a->uu and a->bb]
+       ---- Drop the 10mm cut, as discused above 
+       ---- Look at the dep on match score? Try >0
+       ---- Loop at the dep on nTrk from LLP decay. Try with >=1 and >=2. Likely to go with >=2 def
+
+
+Make productions more centeralized
+X Add all samples to Code repoistory
+- Re-run all models with new truth classification in a single production
+- Add a dedicated script to merge the outputs into DSID output trees
+- Add a dedicated script to make each of the plots for the PUB note
+
+-------------------------
+----- Haa questions -----
+-------------------------
+- Add samples
+- Understand how the analysis is going to be carried out?
+- Decide on which models we want to show? Are you seriously considering taus, or should we focus only on b's?
+- Understand truth matching more, and what we want to do? Inclusive?
+- Do we want to see if we can resolve the b's?
+- Mass resolution? Should be correlated with how the match score looks.
