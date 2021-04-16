@@ -74,7 +74,7 @@ void traceDescendants( const xAOD::TruthVertex* v,
             if( diff < 10.0 ) continue;
         }
         
-		pt.emplace_back( p->pt()  );
+		    pt.emplace_back( p->pt()  );
         eta.emplace_back( p->eta() );
         phi.emplace_back( p->phi() );
         pid.emplace_back( p->pdgId() );

@@ -48,7 +48,7 @@ public:
 #pragma message ( "ToDo: some of these parameters are not yet configurable" )
 VsiEfficiencyProcessor::Impl::Impl(VsiEfficiencyProcessor* p)
   : doRecursive( true )
-  , pTthr( 1.e3 )
+  , pTthr( 5.e2 )
   , truthMatchResidualLimit ( 10.0 )
   , trueRadius( 0.0 )
   , distanceCutoff( 10 )
@@ -154,6 +154,10 @@ void VsiEfficiencyProcessor::registerVariables(EL::Worker* wk) {
   m_vars["LLP_mass"]                            = std::vector<float>{};
   m_vars["LLP_childOpenAngle"]                  = std::vector<float>{};
   m_vars["LLP_pid"]                             = std::vector<int>{};
+  m_vars["LLP_prod_r"]                          = std::vector<float>{};
+  m_vars["LLP_prod_x"]                          = std::vector<float>{};
+  m_vars["LLP_prod_y"]                          = std::vector<float>{};
+  m_vars["LLP_prod_z"]                          = std::vector<float>{};
   
   m_vars["truthPos_size"]                       = std::vector< size_t >{};
   m_vars["truthPos_r"]                          = std::vector< std::vector<float> >{};
@@ -190,16 +194,26 @@ void VsiEfficiencyProcessor::registerVariables(EL::Worker* wk) {
   m_vars["descendent_decay_z"]                  = std::vector< std::vector<float> >{};
   m_vars["descendent_decay_phi"]                = std::vector< std::vector<float> >{};
   m_vars["descendent_pid"]                      = std::vector< std::vector<int> >{};
+
   m_vars["descendent_pt"]                       = std::vector< std::vector<float> >{};
   m_vars["descendent_eta"]                      = std::vector< std::vector<float> >{};
   m_vars["descendent_phi"]                      = std::vector< std::vector<float> >{};
   m_vars["descendent_mass"]                     = std::vector< std::vector<float> >{};
   m_vars["descendent_charge"]                   = std::vector< std::vector<float> >{};
+  m_vars["descendent_d0"]                       = std::vector< std::vector<float> >{};
+  m_vars["descendent_z0"]                       = std::vector< std::vector<float> >{};
+ 
   m_vars["descendent_isReconstructed"]          = std::vector< std::vector<char> >{};
   m_vars["descendent_isAssociated"]             = std::vector< std::vector<char> >{};
   m_vars["descendent_isSelected"]               = std::vector< std::vector<char> >{};
-  m_vars["descendent_d0"]                       = std::vector< std::vector<float> >{};
-  m_vars["descendent_z0"]                       = std::vector< std::vector<float> >{};
+
+  m_vars["descendent_track_pt"]                 = std::vector< std::vector<float> >{};
+  m_vars["descendent_track_eta"]                = std::vector< std::vector<float> >{};
+  m_vars["descendent_track_phi"]                = std::vector< std::vector<float> >{};
+  m_vars["descendent_track_mass"]               = std::vector< std::vector<float> >{};
+  m_vars["descendent_track_charge"]             = std::vector< std::vector<float> >{};
+  m_vars["descendent_track_d0"]                 = std::vector< std::vector<float> >{};
+  m_vars["descendent_track_z0"]                 = std::vector< std::vector<float> >{};
   m_vars["descendent_refReco_r"]                = std::vector< std::vector<float> >{};
   m_vars["descendent_refReco_z"]                = std::vector< std::vector<float> >{};
   m_vars["descendent_refReco_phi"]              = std::vector< std::vector<float> >{};
@@ -308,6 +322,10 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
   REFVAR( LLP_mass,                             std::vector<float>                 );
   REFVAR( LLP_childOpenAngle,                   std::vector<float>                 );
   REFVAR( LLP_pid,                              std::vector<int>                   );
+  REFVAR( LLP_prod_r,                           std::vector<float>                 );
+  REFVAR( LLP_prod_x,                           std::vector<float>                 );
+  REFVAR( LLP_prod_y,                           std::vector<float>                 );
+  REFVAR( LLP_prod_z,                           std::vector<float>                 );
   
   REFVAR( truthPos_size,                        std::vector< size_t >              );
   REFVAR( truthPos_r,                           std::vector< std::vector<float> >  );
@@ -349,11 +367,20 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
   REFVAR( descendent_phi,                       std::vector< std::vector<float> >  );
   REFVAR( descendent_mass,                      std::vector< std::vector<float> >  );
   REFVAR( descendent_charge,                    std::vector< std::vector<float> >  );
+  REFVAR( descendent_d0,                        std::vector< std::vector<float> >  );
+  REFVAR( descendent_z0,                        std::vector< std::vector<float> >  );
+ 
   REFVAR( descendent_isReconstructed,           std::vector< std::vector<char> >   );
   REFVAR( descendent_isAssociated,              std::vector< std::vector<char> >   );
   REFVAR( descendent_isSelected,                std::vector< std::vector<char> >   );
-  REFVAR( descendent_d0,                        std::vector< std::vector<float> >  );
-  REFVAR( descendent_z0,                        std::vector< std::vector<float> >  );
+  REFVAR( descendent_track_pt,                  std::vector< std::vector<float> >  );
+  REFVAR( descendent_track_eta,                 std::vector< std::vector<float> >  );
+  REFVAR( descendent_track_phi,                 std::vector< std::vector<float> >  );
+  REFVAR( descendent_track_mass,                std::vector< std::vector<float> >  );
+  REFVAR( descendent_track_charge,              std::vector< std::vector<float> >  );
+  REFVAR( descendent_track_d0,                  std::vector< std::vector<float> >  );
+  REFVAR( descendent_track_z0,                  std::vector< std::vector<float> >  );
+
   REFVAR( descendent_refReco_r,                 std::vector< std::vector<float> >  );
   REFVAR( descendent_refReco_z,                 std::vector< std::vector<float> >  );
   REFVAR( descendent_refReco_phi,               std::vector< std::vector<float> >  );
@@ -466,6 +493,18 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
     r_LLP_phi       .emplace_back( signalTruthVertex->incomingParticle(0)->phi() );
     r_LLP_mass      .emplace_back( signalTruthVertex->incomingParticle(0)->m() );
     r_LLP_pid       .emplace_back( signalTruthVertex->incomingParticle(0)->pdgId() );
+    if(signalTruthVertex->incomingParticle(0)->parent(0)->hasProdVtx()){
+      r_LLP_prod_r   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->perp() );
+      r_LLP_prod_x   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->x() );
+      r_LLP_prod_y   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->y() );
+      r_LLP_prod_z   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->z() );
+//      std::cout << signalTruthVertex->incomingParticle(0)->parent(0)->pdgId() << std::endl;
+    }else{
+      r_LLP_prod_r   .emplace_back(-999);
+      r_LLP_prod_x   .emplace_back(-999);
+      r_LLP_prod_y   .emplace_back(-999);
+      r_LLP_prod_z   .emplace_back(-999);
+    } 
 
     float childOpenAngle = -1.0;
 
@@ -548,11 +587,20 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
     BACKELEM( descendent_phi                      , std::vector<float> {}   );
     BACKELEM( descendent_mass                     , std::vector<float> {}   );
     BACKELEM( descendent_charge                   , std::vector<float> {}   );
+    BACKELEM( descendent_d0                       , std::vector<float> {}    );
+    BACKELEM( descendent_z0                       , std::vector<float> {}    );
+ 
     BACKELEM( descendent_isReconstructed          , std::vector<char> {}    );
     BACKELEM( descendent_isAssociated             , std::vector<char> {}    );
     BACKELEM( descendent_isSelected               , std::vector<char> {}    );
-    BACKELEM( descendent_d0                       , std::vector<float> {}    );
-    BACKELEM( descendent_z0                       , std::vector<float> {}    );
+
+    BACKELEM( descendent_track_pt                 , std::vector<float> {}   );
+    BACKELEM( descendent_track_eta                , std::vector<float> {}   );
+    BACKELEM( descendent_track_phi                , std::vector<float> {}   );
+    BACKELEM( descendent_track_mass               , std::vector<float> {}   );
+    BACKELEM( descendent_track_charge             , std::vector<float> {}   );
+    BACKELEM( descendent_track_d0                 , std::vector<float> {}    );
+    BACKELEM( descendent_track_z0                 , std::vector<float> {}    );
     BACKELEM( descendent_refReco_r                , std::vector<float> {}    );
     BACKELEM( descendent_refReco_z                , std::vector<float> {}    );
     BACKELEM( descendent_refReco_phi              , std::vector<float> {}    );
@@ -711,13 +759,20 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
       b_descendent_phi             .emplace_back( truth->phi()    );
       b_descendent_mass            .emplace_back( truth->m()      );
       b_descendent_charge          .emplace_back( truth->charge() );
+      b_descendent_d0              .emplace_back( truth->auxdata<float>("d0"));
+      b_descendent_z0              .emplace_back( truth->auxdata<float>("z0"));
       
       bool isReconstructed = m_impl->truthTrackHash.find(truth) != m_impl->truthTrackHash.end();
       b_descendent_isReconstructed .emplace_back( isReconstructed );
       b_descendent_isAssociated    .emplace_back( false );
       
-      b_descendent_d0          .emplace_back( AlgConsts::invalidFloat );
-      b_descendent_z0          .emplace_back( AlgConsts::invalidFloat );
+      b_descendent_track_pt    .emplace_back( AlgConsts::invalidFloat );
+      b_descendent_track_eta   .emplace_back( AlgConsts::invalidFloat );
+      b_descendent_track_phi   .emplace_back( AlgConsts::invalidFloat );
+      b_descendent_track_mass  .emplace_back( AlgConsts::invalidFloat );
+      b_descendent_track_charge.emplace_back( AlgConsts::invalidFloat );
+      b_descendent_track_d0    .emplace_back( AlgConsts::invalidFloat );
+      b_descendent_track_z0    .emplace_back( AlgConsts::invalidFloat );
       b_descendent_refReco_r   .emplace_back( AlgConsts::invalidFloat );
       b_descendent_refReco_z   .emplace_back( AlgConsts::invalidFloat );
       b_descendent_refReco_phi .emplace_back( AlgConsts::invalidFloat );
@@ -730,7 +785,16 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
         reconstructedParticles.emplace( truth );
         
         const auto* trk = m_impl->truthTrackHash.at( truth );
-        
+
+        // Store track parameters even when no vertex was reconstructed (Ushioda)
+        b_descendent_track_pt          .back() = trk->pt();
+        b_descendent_track_eta         .back() = trk->eta();
+        b_descendent_track_phi         .back() = trk->phi();
+        b_descendent_track_mass        .back() = trk->m();
+        b_descendent_track_charge      .back() = trk->charge();
+        b_descendent_track_d0          .back() = trk->d0();
+        b_descendent_track_z0          .back() = trk->z0();
+
         auto max_dist = AlgConsts::maxValue;
         
         // Select the closest vertex wrt the production point
@@ -757,9 +821,15 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
           }
           
           if( dist < max_dist ) {
-            b_descendent_d0          .back() = trk->d0();
-            b_descendent_z0          .back() = trk->z0();
-            
+/*
+            b_descendent_track_pt          .back() = trk->pt();
+            b_descendent_track_eta         .back() = trk->eta();
+            b_descendent_track_phi         .back() = trk->phi();
+            b_descendent_track_mass        .back() = trk->m();
+            b_descendent_track_charge      .back() = trk->charge();
+            b_descendent_track_d0          .back() = trk->d0();
+            b_descendent_track_z0          .back() = trk->z0();
+*/            
             b_descendent_refReco_r   .back() = pos.Perp();
             b_descendent_refReco_z   .back() = pos.z();
             b_descendent_refReco_phi .back() = pos.Phi();

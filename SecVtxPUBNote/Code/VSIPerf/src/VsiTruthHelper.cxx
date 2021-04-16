@@ -280,7 +280,8 @@ namespace VsiTruthHelper {
     for( size_t itrk=0; itrk<signalTruthVertex->nOutgoingParticles(); itrk++) {
       const auto* particle = signalTruthVertex->outgoingParticle( itrk );
       if( !particle->isCharged()    ) continue;
-      if( particle->pt() < 1000.0    ) continue;
+//      if( particle->pt() < 1000.0    ) continue;
+      if( particle->pt() < 500.0    ) continue;
       nC++;
     }
 
