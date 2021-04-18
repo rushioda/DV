@@ -154,10 +154,17 @@ void VsiEfficiencyProcessor::registerVariables(EL::Worker* wk) {
   m_vars["LLP_mass"]                            = std::vector<float>{};
   m_vars["LLP_childOpenAngle"]                  = std::vector<float>{};
   m_vars["LLP_pid"]                             = std::vector<int>{};
-  m_vars["LLP_prod_r"]                          = std::vector<float>{};
-  m_vars["LLP_prod_x"]                          = std::vector<float>{};
-  m_vars["LLP_prod_y"]                          = std::vector<float>{};
-  m_vars["LLP_prod_z"]                          = std::vector<float>{};
+
+  // Parent of LLP if exist
+  m_vars["Parent_prod_r"]                       = std::vector<float>{};
+  m_vars["Parent_prod_x"]                       = std::vector<float>{};
+  m_vars["Parent_prod_y"]                       = std::vector<float>{};
+  m_vars["Parent_prod_z"]                       = std::vector<float>{};
+  m_vars["Parent_pt"]                           = std::vector<float>{};
+  m_vars["Parent_eta"]                          = std::vector<float>{};
+  m_vars["Parent_phi"]                          = std::vector<float>{};
+  m_vars["Parent_mass"]                         = std::vector<float>{};
+  m_vars["Parent_pid"]                          = std::vector<int>{};
 
   m_vars["truthPos_size"]                       = std::vector< size_t >{};
   m_vars["truthPos_r"]                          = std::vector< std::vector<float> >{};
@@ -329,11 +336,17 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
   REFVAR( LLP_mass,                             std::vector<float>                 );
   REFVAR( LLP_childOpenAngle,                   std::vector<float>                 );
   REFVAR( LLP_pid,                              std::vector<int>                   );
-  REFVAR( LLP_prod_r,                           std::vector<float>                 );
-  REFVAR( LLP_prod_x,                           std::vector<float>                 );
-  REFVAR( LLP_prod_y,                           std::vector<float>                 );
-  REFVAR( LLP_prod_z,                           std::vector<float>                 );
-  
+
+  REFVAR( Parent_prod_r,                        std::vector<float>                 );
+  REFVAR( Parent_prod_x,                        std::vector<float>                 );
+  REFVAR( Parent_prod_y,                        std::vector<float>                 );
+  REFVAR( Parent_prod_z,                        std::vector<float>                 );
+  REFVAR( Parent_pt,                            std::vector<float>                 );
+  REFVAR( Parent_eta,                           std::vector<float>                 );
+  REFVAR( Parent_phi,                           std::vector<float>                 );
+  REFVAR( Parent_mass,                          std::vector<float>                 );
+  REFVAR( Parent_pid,                           std::vector<int>                   );
+
   REFVAR( truthPos_size,                        std::vector< size_t >              );
   REFVAR( truthPos_r,                           std::vector< std::vector<float> >  );
   REFVAR( truthPos_x,                           std::vector< std::vector<float> >  );
@@ -508,17 +521,24 @@ EL::StatusCode VsiEfficiencyProcessor::processDetail( xAOD::TEvent* event, xAOD:
     r_LLP_phi       .emplace_back( signalTruthVertex->incomingParticle(0)->phi() );
     r_LLP_mass      .emplace_back( signalTruthVertex->incomingParticle(0)->m() );
     r_LLP_pid       .emplace_back( signalTruthVertex->incomingParticle(0)->pdgId() );
+    r_Parent_pt       .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->pt() );
+    r_Parent_eta      .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->eta() );
+    r_Parent_phi      .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->phi() );
+    r_Parent_mass     .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->m() );
+    r_Parent_pid      .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->pdgId() );
     if(signalTruthVertex->incomingParticle(0)->parent(0)->hasProdVtx()){
-      r_LLP_prod_r   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->perp() );
-      r_LLP_prod_x   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->x() );
-      r_LLP_prod_y   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->y() );
-      r_LLP_prod_z   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->z() );
-//      std::cout << signalTruthVertex->incomingParticle(0)->parent(0)->pdgId() << std::endl;
+      if(signalTruthVertex->incomingParticle(0)->parent(0)->pdgId()!=1000023){
+        std::cout << "Parent is not N2 " << std::endl;
+      }
+      r_Parent_prod_r   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->perp() );
+      r_Parent_prod_x   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->x() );
+      r_Parent_prod_y   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->y() );
+      r_Parent_prod_z   .emplace_back( signalTruthVertex->incomingParticle(0)->parent(0)->prodVtx()->z() );
     }else{
-      r_LLP_prod_r   .emplace_back(-999);
-      r_LLP_prod_x   .emplace_back(-999);
-      r_LLP_prod_y   .emplace_back(-999);
-      r_LLP_prod_z   .emplace_back(-999);
+      r_Parent_prod_r   .emplace_back(-999);
+      r_Parent_prod_x   .emplace_back(-999);
+      r_Parent_prod_y   .emplace_back(-999);
+      r_Parent_prod_z   .emplace_back(-999);
     } 
 
     float childOpenAngle = -1.0;

@@ -9,7 +9,7 @@ namespace VsiTruthHelper {
   auto registerFunc = []() {
     pidFuncs["Rhadron"]            = VsiTruthHelper::selectRhadron;
     pidFuncs["N1"]                 = VsiTruthHelper::selectN1;
-	pidFuncs["Higgs"]              = VsiTruthHelper::selectHiggs;
+	  pidFuncs["Higgs"]              = VsiTruthHelper::selectHiggs;
     pidFuncs["Stop1"]              = VsiTruthHelper::selectStop1;
     pidFuncs["InvisibleFromHiggs"] = VsiTruthHelper::selectInvisibleFromHiggs;
     pidFuncs["DarkPhoton"]         = VsiTruthHelper::selectDarkPhoton;
